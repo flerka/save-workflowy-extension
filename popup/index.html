@@ -5,11 +5,13 @@
     <meta charset="utf-8">
 	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
     <link rel="stylesheet" href="popup.css"/>
-	<script src="popup.js"></script> 
+	<script src="popup.js"></script>
+    <script src="workflowyApiClient.js"></script>
+	<script src="uuidv4.min.js"></script>
   </head>
 
 <body>
-	<div>
+	<div id="auth-container" class="content">
 		<form id="login-form" class="pure-form pure-form-stacked" method="post">
 			<fieldset>
 				<legend>Login form</legend>
@@ -23,6 +25,17 @@
 
 				<button type="submit" class="pure-button pure-button-primary">Sign in</button>
 			</fieldset>
+		</form>
+	</div>
+	<div id="add-to-worklowy-container" class="content" hidden>
+		<form class="pure-form" id="add-to-worklowy-form">
+			<fieldset class="pure-group">
+				<input type="text" class="pure-input-1-2" placeholder="Add tags splitted with space in needed">
+				<input type="text" class="pure-input-1-2" placeholder="Where to save">
+				<textarea class="pure-input-1-2" placeholder="Additional note if needed"></textarea>
+			</fieldset>
+		
+			<button type="submit" class="pure-button pure-input-1-2 pure-button-primary">Add</button>
 		</form>
 	</div>
 </body>

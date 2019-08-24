@@ -9,6 +9,7 @@
   },
   "permissions": [
     "activeTab",
+	"storage",
     "https://workflowy.com/"
   ]
 }
