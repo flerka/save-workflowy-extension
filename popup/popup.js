@@ -1,11 +1,18 @@
 window.onload = async function () {
 	window.client = new WorkflowyApiClient();
-	chrome.storage.local.get('isLogged', function(item) {
+	chrome.storage.local.get('isLogged', async function(item) {
 		if(item.isLogged) {
 			hideLogin();
 		}
 		else {
-			showLogin();
+			// double check not to show login form if user has already login
+			let refreshResult = await window.client.refresh();
+			if (refreshResult) {
+				hideLogin();
+			}
+			else {
+				showLogin();
+			}
 		}
 	});
 
@@ -34,23 +41,22 @@ async function addToWorkflowy(e) {
 		return;
 	}
 
-	// TODO add project selection here or some default project
-	let projectId = "";
-	await window.client.create(projectId, window.location.href);
+	// TODO check behavior in multiply windows env
+	// TODO handle long url in the future
+	let activeTabs = await browser.tabs.query({active: true});
+	await window.client.create(activeTabs[0].url);
 }
 
 function hideLogin() {
-	document.getElementById(Constants.authContainerId).setAttribute("hidden", true);
-	document.getElementById(Constants.addToWorklowyContainerId).removeAttribute("hidden");
+	document.getElementById(authContainerId).setAttribute("hidden", true);
+	document.getElementById(addToWorklowyContainerId).removeAttribute("hidden");
 }
 
 function showLogin() {
-	document.getElementById(Constants.addToWorklowyContainerId).setAttribute("hidden", true);
-	document.getElementById(Constants.authContainerId).removeAttribute("hidden");
+	document.getElementById(addToWorklowyContainerId).setAttribute("hidden", true);
+	document.getElementById(authContainerId).removeAttribute("hidden");
 }
 
-class Constants {
-	static isLoggedStorageKey = "isLogged";
-	static authContainerId = "auth-container";
-	static addToWorklowyContainerId = "add-to-worklowy-container";
-}
+const isLoggedStorageKey = "isLogged";
+const authContainerId = "auth-container";
+const addToWorklowyContainerId = "add-to-worklowy-container";

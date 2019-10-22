@@ -1,7 +1,9 @@
 class WorkflowyApiClient {
     clientVersion = 18;
     clientId = null;
+    parenToSaveId = "None";
     lastTransactionId = null;
+    parentProjectName = "#savetoworkflowy"
 
     urls = {
         login: 'https://workflowy.com/ajax_login',
@@ -35,6 +37,18 @@ class WorkflowyApiClient {
             let metaInfo = await (await fetch(this.urls.meta)).json();
             this.clientId = metaInfo.projectTreeData.clientId;
             this.lastTransactionId = metaInfo.projectTreeData.mainProjectTreeInfo.initialMostRecentOperationTransactionId;
+
+            if (metaInfo.projectTreeData.mainProjectTreeInfo.rootProjectChildren !== 'undefined' && metaInfo.projectTreeData.mainProjectTreeInfo.rootProjectChildren.length > 0) {
+                let parentName = this.parentProjectName;
+                let parentToSave = metaInfo.projectTreeData.mainProjectTreeInfo.rootProjectChildren.find(function(element) {
+                    return element.nm && element.nm.includes(parentName);
+                  });
+
+                if (parentToSave) {
+                    this.parenToSaveId = parentToSave.id;
+                }
+            }
+
             return true;
         }
         catch (e) {
@@ -43,14 +57,14 @@ class WorkflowyApiClient {
         }
     }
 
-    async create(parentId, name) {
+    async create(name) {
         let projectId = uuidv4();
         let operations = [
             {
                 type: "create",
                 data: {
                     projectid: projectId,
-                    parentid: parentId,
+                    parentid: this.parenToSaveId,
                     priority:  0
                 },
             },
