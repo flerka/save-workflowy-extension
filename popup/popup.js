@@ -15,9 +15,6 @@ window.onload = async function () {
 			}
 		}
 	});
-
-	document.getElementById("login-form").addEventListener("submit", login);
-	document.getElementById("add-to-worklowy-form").addEventListener("submit", addToWorkflowy);
 };
 
 async function login(e) {
